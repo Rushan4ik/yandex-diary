@@ -2,6 +2,7 @@ import sqlite3
 from PyQt5.QtWidgets import QWidget, QGridLayout, QPushButton
 
 from widgets.subject_widget import SubjectsWidget
+from widgets.goals_widget import GoalsWidget
 
 
 class MainWidget(QWidget):
@@ -12,11 +13,13 @@ class MainWidget(QWidget):
 
     def init_ui(self):
         grid_layout = QGridLayout()
+
         self.subjects_button = QPushButton("Subjects", self)
         self.subjects_button.clicked.connect(self.open_subject_widget)
         grid_layout.addWidget(self.subjects_button, 0, 0)
 
         self.goals_button = QPushButton("Goals", self)
+        self.goals_button.clicked.connect(self.open_goal_widget)
         grid_layout.addWidget(self.goals_button, 0, 1)
 
         self.replacements_button = QPushButton("Replacements", self)
@@ -32,4 +35,8 @@ class MainWidget(QWidget):
 
     def open_subject_widget(self):
         self.widget = SubjectsWidget(self.connection)
+        self.widget.show()
+
+    def open_goal_widget(self):
+        self.widget = GoalsWidget(self.connection)
         self.widget.show()
