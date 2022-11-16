@@ -41,9 +41,10 @@ class SubjectsWidget(QWidget):
 
     def update_state(self, new_name):
         if new_name == '\0{Deleted}\0':
-            self.button.hide()
-            self.button.setEnabled(False)
-        self.button.setText(new_name)
+            self.layout().removeWidget(self.button)
+            del self.button
+        else:
+            self.button.setText(new_name)
 
     def add_button(self, identifier, name):
         button = QPushButton(name, self)
