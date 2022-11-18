@@ -98,8 +98,7 @@ class HomeworksWidget(QWidget):
 
     def remove_homework(self, identifier):
         grid = self.layout()
-        x, y, w, h = grid.getItemPosition(grid.indexOf(self.sender()))
-
+        self.sender().setEnabled(False)
         query = "delete from homeworks where homework_id = ?"
         self.connection.execute(query, (identifier,))
         self.connection.commit()

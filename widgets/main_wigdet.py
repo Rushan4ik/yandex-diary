@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, QGridLayout, QPushButton
 
 from widgets.homeworks_widget import HomeworksWidget
 from widgets.lesson_widget import LessonsWidget
+from widgets.replacement_widget import ReplacementsWidget
 from widgets.subject_widget import SubjectsWidget
 from widgets.goals_widget import GoalsWidget
 
@@ -25,6 +26,7 @@ class MainWidget(QWidget):
         grid_layout.addWidget(self.goals_button, 0, 1)
 
         self.replacements_button = QPushButton("Replacements", self)
+        self.replacements_button.clicked.connect(self.open_replacement_widget)
         grid_layout.addWidget(self.replacements_button, 1, 0)
 
         self.lessons_button = QPushButton("Lessons", self)
@@ -51,4 +53,8 @@ class MainWidget(QWidget):
 
     def open_homeworks_widget(self):
         self.widget = HomeworksWidget(self.connection)
+        self.widget.show()
+
+    def open_replacement_widget(self):
+        self.widget = ReplacementsWidget(self.connection)
         self.widget.show()
