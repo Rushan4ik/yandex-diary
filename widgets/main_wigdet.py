@@ -1,6 +1,7 @@
 import sqlite3
 from PyQt5.QtWidgets import QWidget, QGridLayout, QPushButton
 
+from widgets.homeworks_widget import HomeworksWidget
 from widgets.lesson_widget import LessonsWidget
 from widgets.subject_widget import SubjectsWidget
 from widgets.goals_widget import GoalsWidget
@@ -31,6 +32,7 @@ class MainWidget(QWidget):
         grid_layout.addWidget(self.lessons_button, 1, 1)
 
         self.homeworks_button = QPushButton("Homeworks", self)
+        self.homeworks_button.clicked.connect(self.open_homeworks_widget)
         grid_layout.addWidget(self.homeworks_button, 2, 0, 1, 2)
 
         self.setLayout(grid_layout)
@@ -45,4 +47,8 @@ class MainWidget(QWidget):
 
     def open_lessons_widget(self):
         self.widget = LessonsWidget(self.connection)
+        self.widget.show()
+
+    def open_homeworks_widget(self):
+        self.widget = HomeworksWidget(self.connection)
         self.widget.show()
