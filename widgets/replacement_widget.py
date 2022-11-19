@@ -75,7 +75,7 @@ class ReplacementsWidget(QWidget):
             item = f"{item[0]}.{item[1]} {item[2]}"
             if item == self.sender().currentText():
                 lesson_id = key
-                return
+                break
         query = "update replacements set lesson_id = ? where replacement_id = ?"
         self.connection.execute(query, (lesson_id, identifier))
         self.connection.commit()

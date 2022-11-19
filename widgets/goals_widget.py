@@ -14,10 +14,13 @@ class GoalsWidget(QWidget):
     def __init__(self, connection: sqlite3.Connection):
         super().__init__()
         self.connection = connection
+        self.init_data()
+        self.init_ui()
+
+    def init_data(self):
         query = "select goal_id, goal_description, goal_state from goals"
         self.result = [(int(identifier), description, int(state))
                        for identifier, description, state in self.connection.execute(query).fetchall()]
-        self.init_ui()
 
     def init_ui(self):
         grid = QGridLayout()
@@ -32,6 +35,7 @@ class GoalsWidget(QWidget):
             grid.addWidget(line_edit, index, 0)
             combo_box = QComboBox(self)
             combo_box.addItems(STATES.values())
+            combo_box.setCurrentIndex(list(STATES.values()).index(STATES[state]))
             combo_box.currentIndexChanged.connect(self.create_state_handler(identifier))
             grid.addWidget(combo_box, index, 1)
             index += 1
@@ -46,7 +50,6 @@ class GoalsWidget(QWidget):
 
     def update_description(self, identifier):
         description = self.sender().text()
-        print(description)
         query = "update goals set goal_description = ? where goal_id = ?"
         self.connection.execute(query, (description, identifier))
         self.connection.commit()
@@ -57,7 +60,6 @@ class GoalsWidget(QWidget):
         for key, value in STATES.items():
             if value == text:
                 ans = key
-        print(ans)
         query = "update goals set goal_state = ? where goal_id = ?"
         self.connection.execute(query, (ans, identifier))
         self.connection.commit()

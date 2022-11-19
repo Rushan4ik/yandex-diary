@@ -1,7 +1,8 @@
+import datetime
 import sqlite3
-from PyQt5.QtWidgets import QWidget, QGridLayout, QPushButton
+from PyQt5.QtWidgets import QWidget, QGridLayout, QPushButton, QLabel
 
-from widgets.homeworks_widget import HomeworksWidget
+from widgets.homeworks_widget import HomeworksWidget, STATES
 from widgets.lesson_widget import LessonsWidget
 from widgets.replacement_widget import ReplacementsWidget
 from widgets.subject_widget import SubjectsWidget
@@ -12,7 +13,21 @@ class MainWidget(QWidget):
     def __init__(self, connection: sqlite3.Connection):
         super().__init__()
         self.connection = connection
+        self.init_data()
         self.init_ui()
+
+    def init_data(self):
+        query = "SELECT subject_name FROM lessons AS l LEFT JOIN subjects AS s " \
+                "ON s.subject_id = l.subject_id WHERE lesson_day = ?;"
+        data = datetime.datetime.today() + datetime.timedelta(days=1)
+        cursor = self.connection.execute(query, (data.isoweekday(),))
+        lessons = ', '.join(f"'{subject[0]}'" for subject in cursor.fetchall())
+        query = 'SELECT homework_description, homework_state, subject_name ' \
+                'FROM homeworks AS h LEFT JOIN subjects AS s ON s.subject_id = h.subject_id ' \
+                f'WHERE subject_name in ({lessons})'
+        cursor.execute(query)
+        self.result = [(description, STATES[state], subject)
+                       for description, state, subject in cursor.fetchall()]
 
     def init_ui(self):
         grid_layout = QGridLayout()
@@ -36,6 +51,11 @@ class MainWidget(QWidget):
         self.homeworks_button = QPushButton("Homeworks", self)
         self.homeworks_button.clicked.connect(self.open_homeworks_widget)
         grid_layout.addWidget(self.homeworks_button, 2, 0, 1, 2)
+
+        index = 3
+        for data in self.result:
+            grid_layout.addWidget(QLabel(';'.join(data), self), index, 0, 1, 2)
+            index += 1
 
         self.setLayout(grid_layout)
 

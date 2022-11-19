@@ -181,4 +181,3 @@ class LessonCreateWidget(QWidget):
         self.connection.commit()
         self.parent_widget.create_lesson(self.day_spin.value(), self.order_spin.value(),
                                          self.subject_combo.currentText())
-        self.close()

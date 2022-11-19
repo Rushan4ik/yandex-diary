@@ -14,6 +14,10 @@ class HomeworksWidget(QWidget):
     def __init__(self, connection: sqlite3.Connection):
         super().__init__()
         self.connection = connection
+        self.init_data()
+        self.init_ui()
+
+    def init_data(self):
         query = "SELECT homework_id, subject_name, homework_description, homework_state " \
                 "FROM homeworks LEFT JOIN subjects ON homeworks.subject_id = subjects.subject_id;"
         cursor = self.connection.execute(query)
@@ -27,7 +31,6 @@ class HomeworksWidget(QWidget):
             identifier = int(identifier)
             self.subject_name[identifier] = name
             self.subject_id[name] = identifier
-        self.init_ui()
 
     def init_ui(self):
         grid = QGridLayout()
@@ -80,7 +83,6 @@ class HomeworksWidget(QWidget):
 
     def update_description(self, identifier):
         text = self.sender().text()
-        print((text, identifier))
         query = "update homeworks set homework_description = ? where homework_id = ?"
         self.connection.execute(query, (text, identifier))
         self.connection.commit()
